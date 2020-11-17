@@ -1,2 +1,32 @@
 # jdbc-console-application
-Console application that implements CRUD operations on local MySQL database  (no Hibernate/Spring)
+Console application that implements CRUD operations on local MySQL database 
+(no Hibernate/Spring) 
+One of the tasks from my database course on 3rd semester of iot program in NULP
+
+p.s
+                            _   _     _                         
+                            | | | |   (_)                        
+ ___  ___  _ __ _ __ _   _  | |_| |__  _ ___                     
+/ __|/ _ \| '__| '__| | | | | __| '_ \| / __|                    
+\__ \ (_) | |  | |  | |_| | | |_| | | | \__ \                    
+|___/\___/|_|  |_|   \__, |  \__|_| |_|_|___/                    
+                      __/ |                                      
+                     |___/                                       
+               _        _                   _        __       _  
+              | |      (_)                 (_)      / _|     | | 
+  ___ ___   __| | ___   _ ___   _ __   __ _ _ _ __ | |_ _   _| | 
+ / __/ _ \ / _` |/ _ \ | / __| | '_ \ / _` | | '_ \|  _| | | | | 
+| (_| (_) | (_| |  __/ | \__ \ | |_) | (_| | | | | | | | |_| | | 
+ \___\___/ \__,_|\___| |_|___/ | .__/ \__,_|_|_| |_|_|  \__,_|_| 
+                               | |                               
+                               |_|                               
+ _          _             _            _                         
+| |        | |           | |          | |                        
+| |_ ___   | | ___   ___ | | __   __ _| |_                       
+| __/ _ \  | |/ _ \ / _ \| |/ /  / _` | __|                      
+| || (_) | | | (_) | (_) |   <  | (_| | |_                       
+ \__\___/  |_|\___/ \___/|_|\_\  \__,_|\__|                      
+                                                                 
+                                                              
+                                                                                                                                  
+                                                                 
