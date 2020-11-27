@@ -1,102 +1,80 @@
 package com.iot.model.dao.implementation;
 
-import com.iot.DatabaseConnector;
 import com.iot.model.dao.GenericDAO;
 import com.iot.model.entity.Genre;
-import java.sql.*;
+import com.iot.util.HibernateUtil;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 
 
 public class GenreDAO implements GenericDAO<Genre> {
-  private static final String GET_ALL = "SELECT * FROM spotify.genre";
-  private static final String GET_ONE = "SELECT * FROM spotify.genre WHERE id=?";
-  private static final String CREATE = "INSERT spotify.genre "
-          + "(name) VALUES (?)";
-  private static final String UPDATE = "UPDATE spotify.genre"
-          + " SET name=? WHERE id=?";
-  private static final String DELETE = "DELETE FROM spotify.genre WHERE id=?";
-  
+
+  protected final SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+
   @Override
   public List<Genre> findAll() {
-    List<Genre> genres = new ArrayList<>();
-    try (PreparedStatement statement = DatabaseConnector.getConnection().prepareStatement(GET_ALL)) {
-      System.out.println(statement);
-      ResultSet resultSet = statement.executeQuery();
-      while (resultSet.next()) {
-        Genre genre = new Genre(
-            resultSet.getInt("id"), 
-            resultSet.getString("name")
-        );
-        genres.add(genre);
-      }
+    List<Genre> credentials = new ArrayList<>();
+
+    try (Session session = sessionFactory.getCurrentSession()) {
+      session.beginTransaction();
+      credentials = session.createQuery("from Genre").getResultList();
+      session.getTransaction().commit();
     } catch (Exception e) {
       e.printStackTrace();
     }
-    return genres;
+    return credentials;
   }
-  
+
   @Override
-  public Genre findOne(Integer id) {
+  public Genre findOne(Integer id) throws SQLException {
     Genre genre = null;
-    try (PreparedStatement statement = DatabaseConnector.getConnection().prepareStatement(GET_ONE)) {
 
-      statement.setInt(1, id);
-      System.out.println(statement);
-      ResultSet resultSet = statement.executeQuery();
-
-      while (resultSet.next()) {
-        genre = new Genre(
-           resultSet.getInt("id"), 
-           resultSet.getString("name")
-        );
-      }
+    try (Session session = sessionFactory.getCurrentSession()) {
+      session.beginTransaction();
+      genre = session.get(Genre.class, id);
+      session.getTransaction().commit();
     } catch (Exception e) {
       e.printStackTrace();
     }
     return genre;
   }
-  
+
   @Override
   public void create(Genre genre) throws SQLException {
-
-    try (PreparedStatement statement = DatabaseConnector.getConnection().prepareStatement(CREATE)) {
-     
-      statement.setString(1, String.valueOf(genre.getName()));
-
-      statement.executeUpdate();
-      System.out.println(statement);
-    }
-    catch (Exception e) {
+    try (Session session = sessionFactory.getCurrentSession()) {
+      session.beginTransaction();
+      session.save(genre);
+      session.getTransaction().commit();
+    } catch (Exception e) {
       e.printStackTrace();
     }
-
-    
   }
+
   @Override
   public void update(Integer id, Genre genre) throws SQLException {
-    try (PreparedStatement statement = DatabaseConnector.getConnection().prepareStatement(UPDATE)) {
-   
-      statement.setString(1, genre.getName());
-      statement.setInt(2, genre.getId());
-   
-      statement.executeUpdate();
-      System.out.println(statement);
+    try (Session session = sessionFactory.getCurrentSession()) {
+      session.beginTransaction();
+      session.update(genre);
+      session.getTransaction().commit();
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
-  
+
   @Override
-  public void delete(Integer id) throws SQLException {
-    try (PreparedStatement statement = DatabaseConnector.getConnection().prepareStatement(DELETE)) {
-      statement.setInt(1, id);
-      System.out.println(statement);
-      statement.executeUpdate();
+  public void delete(Integer id) {
+    try (Session session = sessionFactory.getCurrentSession()) {
+      session.beginTransaction();
+      Genre credential = session.get(Genre.class, id);
+      if (credential != null) {
+        session.delete(credential);
+      }
+      session.getTransaction().commit();
     } catch (Exception e) {
       e.printStackTrace();
     }
   }
-  
 }

@@ -32,7 +32,7 @@ public class GenreController implements GenericController<Genre>  {
   @Override
   public void delete(Integer id) throws SQLException {
     dao.delete(id);
-    
+
   }
 
 }

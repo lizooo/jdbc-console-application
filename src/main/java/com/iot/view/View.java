@@ -1,71 +1,68 @@
 package com.iot.view;
 
+import com.iot.controller.CredentialsController;
+import com.iot.controller.GenreController;
+import com.iot.controller.LabelController;
+import com.iot.controller.PlaylistController;
+import com.iot.controller.UserController;
+import com.iot.model.entity.Credentials;
+import com.iot.model.entity.Genre;
+import com.iot.model.entity.Label;
+import com.iot.model.entity.Playlist;
+import com.iot.model.entity.User;
+import com.iot.view.Menu;
+import com.iot.view.Printable;
 import java.sql.SQLException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
-import com.iot.view.Printable;
-import com.iot.view.Menu;
-import com.iot.model.entity.Credentials;
-import com.iot.model.entity.Genre;
-import com.iot.model.entity.Label;
-import com.iot.model.entity.User;
-import com.iot.model.entity.Playlist;
-import com.iot.controller.CredentialsController;
-import com.iot.controller.GenreController;
-import com.iot.controller.LabelController;
-import com.iot.controller.UserController;
-import com.iot.controller.PlaylistController;
-
 
 
 public class View {
   private static final Scanner SCANNER = new Scanner(System.in);
   private final Map<String, Printable> menu = new LinkedHashMap<>();
-  
+
   private final CredentialsController credentialsController = new CredentialsController();
   private final GenreController genreController = new GenreController();
   private final LabelController labelController = new LabelController();
   private final UserController userController = new UserController();
   private final PlaylistController playlistController = new PlaylistController();
-  
-  
+
+
   public View() {
-    
-  //TODO
+
     menu.put("11", this::getAllCredentials);
     menu.put("12", this::getCredentialById);
     menu.put("13", this::createCredentials);
     menu.put("14", this::updateCredentials);
     menu.put("15", this::deleteCredentials);
-    
+
     menu.put("21", this::getAllGenres);
     menu.put("22", this::getGenreById);
     menu.put("23", this::createGenre);
     menu.put("24", this::updateGenre);
     menu.put("25", this::deleteGenre);
-    
+
     menu.put("31", this::getAllLabels);
     menu.put("32", this::getLabelById);
     menu.put("33", this::createLabel);
     menu.put("34", this::updateLabel);
     menu.put("35", this::deleteLabel);
-    
+
     menu.put("41", this::getAllUsers);
     menu.put("42", this::getUserById);
     menu.put("43", this::createUser);
     menu.put("44", this::updateUser);
     menu.put("45", this::deleteUser);
-    
+
     menu.put("51", this::getAllPlaylists);
     menu.put("52", this::getPlaylistById);
     menu.put("53", this::createPlaylist);
     menu.put("54", this::updatePlaylist);
     menu.put("55", this::deletePlaylist);
-   
+
   }
 
-  
 
   public final void show() {
     String input;
@@ -80,32 +77,35 @@ public class View {
       }
     } while (SCANNER.hasNext());
   }
-  
-  
-//---------------------------------------------------------------------------------------------------------------------
-//          CREDENTIALS
-//---------------------------------------------------------------------------------------------------------------------
-  
- 
+
+
+  //-------------------------------------------------------------------------
+  //          CREDENTIALS
+  //--------------------------------------------------------------------------
+
+
   private void getAllCredentials() throws SQLException {
     System.out.println("\nGETting credentials...");
     System.out.println(credentialsController.findAll() + "\n");
   }
-  
+
   private void getCredentialById() throws SQLException {
     System.out.println("\nGETting credentials... Enter ID: ");
     Integer id = SCANNER.nextInt();
     System.out.println(credentialsController.findOne(id) + "\n");
   }
-  
-  private Credentials getCredentialsInputs() {
+
+  private Credentials getCredentialsInputs() throws SQLException {
     System.out.println("\nEnter bcrypt password: ");
     String userName = SCANNER.next();
     System.out.println("Enter user name: ");
     String dcryptPassword = SCANNER.next();
-    return new Credentials(userName, dcryptPassword);
+    System.out.println("Enter user id: ");
+    Integer userId = SCANNER.nextInt();
+    User user = userController.findOne(userId);
+    return new Credentials(userName, dcryptPassword, user);
   }
-  
+
   private void createCredentials() throws SQLException {
     System.out.println("\nCREATing credentials...");
     Credentials credential = getCredentialsInputs();
@@ -130,28 +130,28 @@ public class View {
     credentialsController.delete(id);
     System.out.println("Deleted credential with ID=" + id + "\n");
   }
-  
-//---------------------------------------------------------------------------------------------------------------------
-//                        GENRE
-//---------------------------------------------------------------------------------------------------------------------
+
+  //--------------------------------------------------------------------
+  //                        GENRE
+  //-------------------------------------------------------------------
 
   private void getAllGenres() throws SQLException {
     System.out.println("\nGETting genres...");
     System.out.println(genreController.findAll() + "\n");
   }
-  
+
   private void getGenreById() throws SQLException {
     System.out.println("\nGETting genres... Enter ID: ");
     Integer id = SCANNER.nextInt();
     System.out.println(genreController.findOne(id) + "\n");
   }
-  
-  private Genre getGenreInputs() {
+
+  private Genre getGenreInputs() throws SQLException {
     System.out.println("\nEnter name of genre: ");
     String name = SCANNER.next();
     return new Genre(name);
   }
-  
+
   private void createGenre() throws SQLException {
     System.out.println("\nCREATing genre...");
     Genre genre = getGenreInputs();
@@ -176,28 +176,28 @@ public class View {
     genreController.delete(id);
     System.out.println("Just deleted genre with ID=" + id + " \n");
   }
-  
-//---------------------------------------------------------------------------------------------------------------------
-//                      LABEL
-//---------------------------------------------------------------------------------------------------------------------
+
+  //----------------------------------------------------------------
+  //                      LABEL
+  // ----------------------------------------------------------------
 
   private void getAllLabels() throws SQLException {
     System.out.println("\nGETting label...");
     System.out.println(labelController.findAll() + "\n");
   }
-  
+
   private void getLabelById() throws SQLException {
     System.out.println("\nGETting label... Enter ID: ");
     Integer id = SCANNER.nextInt();
     System.out.println(labelController.findOne(id) + "\n");
   }
-  
+
   private Label getLabelInputs() {
     System.out.println("\nEnter name of label: ");
     String name = SCANNER.next();
     return new Label(name);
   }
-  
+
   private void createLabel() throws SQLException {
     System.out.println("\nCREATing label..");
     Label label = getLabelInputs();
@@ -222,34 +222,32 @@ public class View {
     labelController.delete(id);
     System.out.println("Just deleted label with ID=" + id + "\n");
   }
-  
-//---------------------------------------------------------------------------------------------------------------------
-//                                       USER
-//---------------------------------------------------------------------------------------------------------------------
+
+  //-----------------------------------------------------------------
+  //                                       USER
+  //-----------------------------------------------------------------
 
   private void getAllUsers() throws SQLException {
     System.out.println("\nGETting user...");
     System.out.println(userController.findAll() + "\n");
   }
-  
+
   private void getUserById() throws SQLException {
     System.out.println("\nGETting user... Enter ID: ");
     Integer id = SCANNER.nextInt();
     System.out.println(userController.findOne(id) + "\n");
   }
-  
-  private User getUserInputs() {
+
+  private User getUserInputs() throws SQLException {
     System.out.println("\nEnter name: ");
     String name = SCANNER.next();
     System.out.println("\nEnter surname: ");
     String surName = SCANNER.next();
     System.out.println("\nEnter email: ");
     String email = SCANNER.next();
-    System.out.println("\nEnter id of credentials: ");
-    String credentialsId = SCANNER.next();
-    return new User(name, surName, email, credentialsId);
+    return new User(name, surName, email);
   }
-  
+
   private void createUser() throws SQLException {
     System.out.println("\n[USER / CREATE]");
     User user = getUserInputs();
@@ -274,22 +272,22 @@ public class View {
     userController.delete(id);
     System.out.println("Just deleted user with ID=" + id + "\n");
   }
-  
-//---------------------------------------------------------------------------------------------------------------------
-//                            PLAYLIST
-//---------------------------------------------------------------------------------------------------------------------
+
+  //----------------------------------------------------------------
+  //                            PLAYLIST
+  //----------------------------------------------------------------
 
   private void getAllPlaylists() throws SQLException {
     System.out.println("\nGETting playlist...");
     System.out.println(playlistController.findAll() + "\n");
   }
-  
+
   private void getPlaylistById() throws SQLException {
     System.out.println("\nGETting playlist... Enter ID: ");
     Integer id = SCANNER.nextInt();
     System.out.println(playlistController.findOne(id) + "\n");
   }
-  
+
   private Playlist getPlaylistInputs() {
     System.out.println("\nEnter name: ");
     String name = SCANNER.next();
@@ -300,10 +298,10 @@ public class View {
     System.out.println("\nEnter label id: ");
     Integer labelId = SCANNER.nextInt();
     System.out.println("\nEnter user id: ");
-    Integer UserId = SCANNER.nextInt();
-    return new Playlist(name, numberOfSongs, genreId, labelId, UserId);
+    Integer userId = SCANNER.nextInt();
+    return new Playlist(name, numberOfSongs, genreId, labelId, userId);
   }
-  
+
   private void createPlaylist() throws SQLException {
     System.out.println("\nCREATing playlist...");
     Playlist playlist = getPlaylistInputs();
@@ -328,5 +326,5 @@ public class View {
     playlistController.delete(id);
     System.out.println("Deleted playlist with ID=" + id + " \n");
   }
-  
+
 }

@@ -2,7 +2,6 @@ package com.iot.controller;
 
 import java.sql.SQLException;
 import java.util.List;
-import com.iot.controller.GenericController;
 import com.iot.model.entity.Credentials;
 import com.iot.model.dao.implementation.CredentialsDAO;
 
